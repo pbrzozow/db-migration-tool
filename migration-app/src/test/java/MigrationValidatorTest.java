@@ -1,4 +1,5 @@
 import database.DataSourceProvider;
+import exception.MigrationAlreadyExistException;
 import migration.MigrationLog;
 import migration.MigrationValidator;
 import model.Migration;
@@ -40,7 +41,7 @@ public class MigrationValidatorTest {
     void shouldThrowExceptionWhenAddingInvalidMigration() throws SQLException {
         when(resultSet.next()).thenReturn(true);
         when(resultSet.getInt(1)).thenReturn(2);
-        assertThrows(SQLException.class,()->migrationValidator.validate(migration));
+        assertThrows(MigrationAlreadyExistException.class,()->migrationValidator.validate(migration));
     }
     @Test
     void shouldNotThrowExceptionWithValidMigration() throws SQLException {

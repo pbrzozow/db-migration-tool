@@ -1,5 +1,6 @@
 package migration;
 
+import exception.MigrationAlreadyExistException;
 import lombok.AllArgsConstructor;
 import model.Migration;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ public class MigrationValidator {
             ps.setString(1, migration.getChecksum().key());
             try (ResultSet resultSet = ps.executeQuery()) {
                 if (resultSet.next() && resultSet.getInt(1) > 0) {
-                    throw new SQLException("Migration already exists in database");
+                    throw new MigrationAlreadyExistException("Migration already exists in database");
                 }
             }
         }

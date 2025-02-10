@@ -2,12 +2,12 @@
 services:
   postgres:
     image: postgres:latest
-    container_name: postgres_db
+    container_name: postgres_migrations
     restart: always
     environment:
       POSTGRES_USER: myusername
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: userdb
+      POSTGRES_DB: migration
     ports:
       - "5432:5432"
     volumes:

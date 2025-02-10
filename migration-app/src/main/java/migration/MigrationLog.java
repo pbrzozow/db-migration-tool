@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 public class MigrationLog {
     private static final Logger logger
             = LoggerFactory.getLogger(MigrationLog.class);
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final DataSource dataSource;
     private final MigrationRepository migrationRepository;
     private TreeMap<Long, Migration> pendingMigrations;
@@ -70,7 +71,7 @@ public class MigrationLog {
 
     public Optional<Migration> getCurrentMigration(){
         Migration migration = null;
-        if (pendingMigrations.isEmpty()){
+        if (!pendingMigrations.isEmpty()){
          migration = pendingMigrations.firstEntry().getValue();}
         return Optional.ofNullable(migration);
     }
@@ -94,7 +95,7 @@ public class MigrationLog {
         logger.info("Migration info saved");
     }
 
-    private long fetchMigrationIndexFromDatabase() {
+    protected long fetchMigrationIndexFromDatabase() {
         long lastMigrationIndex = 0;
         String query= "SELECT COUNT(*) FROM migrations WHERE file_name LIKE 'V%';";
         try(Connection connection = dataSource.getConnection()) {
@@ -112,7 +113,7 @@ public class MigrationLog {
         return lastMigrationIndex;    }
 
     private String getCurrentDate() {
-        return LocalDate.now().format(DATE_FORMATTER);
+        return LocalDateTime.now().format(DATE_FORMATTER);
     }
 
     public Optional<Migration> getUndoMigration(String rollbackId) {

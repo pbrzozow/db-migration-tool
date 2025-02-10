@@ -1,13 +1,13 @@
-import lombok.extern.slf4j.Slf4j;
 import migration.MigrationFactory;
 import migration.MigrationManager;
 
-@Slf4j
 public class Application {
+    private static final String FOLDER_PATH = "src/main/resources/db";
+
     public static void main(String[] args) {
-        MigrationManager migration = MigrationFactory.getMigrationManagerInstance();
-        migration.showHistory();
-        migration.rollback("5");
-        migration.showHistory();
+        MigrationManager manager = MigrationFactory.getMigrationManagerInstance(FOLDER_PATH);
+        manager.showHistory();
+        manager.migrate();
+        manager.showHistory();
     }
 }

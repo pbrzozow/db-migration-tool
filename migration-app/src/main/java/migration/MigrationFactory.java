@@ -6,8 +6,7 @@ import javax.sql.DataSource;
 
 public class MigrationFactory {
 
-    public static MigrationManager getMigrationManagerInstance(){
-        String folderPath = "src/main/resources/db";
+    public static MigrationManager getMigrationManagerInstance(String folderPath){
         DataSource dataSource = DataSourceProvider.getDataSource();
         MigrationRepository migrationRepository = new MigrationRepository(folderPath);
         MigrationLog migrationLog = new MigrationLog(dataSource,migrationRepository);
