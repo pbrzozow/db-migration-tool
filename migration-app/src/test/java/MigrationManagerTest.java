@@ -1,6 +1,5 @@
 import exception.NoPendingMigrationException;
 import exception.UndoMigrationNotFoundException;
-import migration.MigrationExecutor;
 import migration.MigrationLog;
 import migration.MigrationManager;
 import migration.MigrationService;
