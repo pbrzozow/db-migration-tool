@@ -1,0 +1,1 @@
+INSERT INTO EMP(name) values ('barbara');
