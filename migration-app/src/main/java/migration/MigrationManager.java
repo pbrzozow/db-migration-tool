@@ -17,12 +17,20 @@ public class MigrationManager {
 
 public void migrate(){
         synchronized (this) {
-            migrationService.executeNextMigration();
+            try {
+                migrationService.executeNextMigration();
+            }catch (NoPendingMigrationException e){
+                System.out.println("There are no available migrations");
+            }
         }
     }
     public void rollback(String id){
         synchronized (this) {
-            migrationService.rollbackMigrations(id);
+            try{
+                migrationService.rollbackMigrations(id);
+            }catch (UndoMigrationNotFoundException e){
+                System.out.println("Cannot execute rollbacks, error occurred");
+            }
         }
     }
 
