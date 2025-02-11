@@ -13,7 +13,7 @@ public class ConfigurationRetriever {
             properties.load(input);
             return properties.getProperty("migration.dir");
         } catch (IOException e) {
-            System.out.println("Upload a valid diretory path.");
+            System.out.println("Upload a valid directory path.");
             return null;
         }
     }

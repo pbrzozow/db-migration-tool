@@ -7,7 +7,7 @@ public class Application {
     public static void main(String[] args) {
         MigrationManager manager = MigrationFactory.getMigrationManagerInstance(FOLDER_PATH);
         manager.showHistory();
-        manager.migrate();
+        manager.rollback("3");
         manager.showHistory();
     }
 }

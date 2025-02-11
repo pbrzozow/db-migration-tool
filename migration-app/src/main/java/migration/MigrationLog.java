@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -27,6 +26,10 @@ public class MigrationLog {
         this.pendingMigrations=fetchPendingMigrations();
     }
 
+    public void updatePendingMigrations(){
+        pendingMigrations = fetchPendingMigrations();
+    }
+
     private TreeMap<Long,Migration> fetchPendingMigrations() {
         Map<Long, Migration> migrations = getVersionedMigrations();
         Map<Long, Migration> pendingMigrations = getPendingMigrations(migrations);
@@ -38,7 +41,7 @@ public class MigrationLog {
     }
 
     private Map<Long, Migration> getPendingMigrations(Map<Long, Migration> migrations) {
-        long lastMigrationIndex = fetchMigrationIndexFromDatabase();
+        long lastMigrationIndex = fetchLastMigrationIndex();
         Map<Long, Migration> pendingMigrations = filterPendingMigrations(migrations, lastMigrationIndex);
         return pendingMigrations;
     }
@@ -95,7 +98,7 @@ public class MigrationLog {
         logger.info("Migration info saved");
     }
 
-    protected long fetchMigrationIndexFromDatabase() {
+    protected long fetchLastMigrationIndex() {
         long lastMigrationIndex = 0;
         String query= "SELECT COUNT(*) FROM migrations WHERE file_name LIKE 'V%';";
         try(Connection connection = dataSource.getConnection()) {
@@ -139,5 +142,14 @@ public class MigrationLog {
             throw new RuntimeException(e);
         }
         return history.toString();
+    }
+
+    public void deleteMigrationInfo(Long id,Connection connection) throws SQLException {
+        String sql = "DELETE FROM MIGRATIONS WHERE file_name LIKE ? ;";
+        try(PreparedStatement ps = connection.prepareStatement(sql)) {
+            String version = "V"+id+"%";
+            ps.setString(1,version);
+            ps.execute();
+        }
     }
 }

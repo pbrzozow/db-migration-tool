@@ -16,20 +16,27 @@ public class MigrationManager {
     }
 
 public void migrate(){
-        Optional<Migration> currentMigration = migrationLog.getCurrentMigration();
-        if (currentMigration.isPresent()){
-           migrationService.executeMigration(currentMigration.get());
-        } else {
-            throw new NoPendingMigrationException("There are no available migrations! ");
+        synchronized (this) {
+            Optional<Migration> currentMigration = migrationLog.getCurrentMigration();
+            if (currentMigration.isPresent()) {
+                migrationService.executeMigration(currentMigration.get());
+            } else {
+                throw new NoPendingMigrationException("There are no available migrations! ");
+            }
+        }
+    }
+    public void rollback(String id){
+        synchronized (this) {
+            migrationService.rollbackMigrations(id);
         }
     }
 
-    public void rollback(String id){
-            Optional<Migration> undoMigration = migrationLog.getUndoMigration(id);
-            if (undoMigration.isPresent()){
-                migrationService.executeMigration(undoMigration.get());
-            }else {throw new UndoMigrationNotFoundException("Undo migration with id: "+ id +" does not exist");}
-    }
+//    public void rollback(String id){
+//            Optional<Migration> undoMigration = migrationLog.getUndoMigration(id);
+//            if (undoMigration.isPresent()){
+//                migrationService.executeMigration(undoMigration.get());
+//            }else {throw new UndoMigrationNotFoundException("Undo migration with id: "+ id +" does not exist");}
+//    }
 
 
 
