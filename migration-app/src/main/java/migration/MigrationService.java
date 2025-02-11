@@ -41,7 +41,7 @@ public class MigrationService {
         try (Connection connection = DataSourceProvider.getDataSource().getConnection()) {
             connection.setAutoCommit(false);
             long lastMigrationIndex = migrationLog.fetchLastMigrationIndex();
-            while (lastMigrationIndex !=target-1) {
+            while (lastMigrationIndex != target-1) {
                 rollback(String.valueOf(lastMigrationIndex), connection);
                 migrationLog.deleteMigrationInfo(lastMigrationIndex,connection);
                 lastMigrationIndex--;
