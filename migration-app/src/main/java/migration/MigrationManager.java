@@ -31,15 +31,6 @@ public void migrate(){
         }
     }
 
-//    public void rollback(String id){
-//            Optional<Migration> undoMigration = migrationLog.getUndoMigration(id);
-//            if (undoMigration.isPresent()){
-//                migrationService.executeMigration(undoMigration.get());
-//            }else {throw new UndoMigrationNotFoundException("Undo migration with id: "+ id +" does not exist");}
-//    }
-
-
-
     public void showHistory(){
         String migrationHistory = migrationLog.getMigrationHistory();
         System.out.println(migrationHistory);
