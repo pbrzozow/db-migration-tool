@@ -32,7 +32,6 @@ public class MigrationCLI implements Runnable {
     @Override
     public void run() {
         CommandLine.usage(this,System.out);
-        System.out.println("Cos tam cos");
     }
 
 
