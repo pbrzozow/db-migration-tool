@@ -1,6 +1,7 @@
 package migration;
 
 import database.DataSourceProvider;
+import exception.NoPendingMigrationException;
 import exception.UndoMigrationNotFoundException;
 import model.Migration;
 import org.slf4j.Logger;
@@ -21,6 +22,14 @@ public class MigrationService {
     public MigrationService( MigrationLog migrationLog,MigrationValidator migrationValidator) {
         this.migrationLog = migrationLog;
         this.migrationValidator = migrationValidator;
+    }
+    public void executeNextMigration() throws NoPendingMigrationException{
+        Optional<Migration> currentMigration = migrationLog.getCurrentMigration();
+        if (currentMigration.isPresent()) {
+            executeMigration(currentMigration.get());
+        } else {
+            throw new NoPendingMigrationException("There are no available migrations! ");
+        }
     }
 
     public void executeMigration(Migration migration) {
@@ -53,7 +62,7 @@ public class MigrationService {
         }
     }
 
-    private void rollback(String id,Connection connection) throws SQLException {
+    private void rollback(String id,Connection connection) throws SQLException,UndoMigrationNotFoundException {
         Optional<Migration> undoMigration = migrationLog.getUndoMigration(id);
         if (undoMigration.isPresent()){
             executeMigration(undoMigration.get(),connection);

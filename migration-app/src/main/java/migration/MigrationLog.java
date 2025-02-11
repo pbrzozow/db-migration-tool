@@ -84,7 +84,4 @@ public class MigrationLog {
     public void deleteMigrationInfo(Long id,Connection connection) throws SQLException {
         migrationLogRepository.deleteMigrationInfo(id,connection);
     }
-
-
-
 }

@@ -17,12 +17,7 @@ public class MigrationManager {
 
 public void migrate(){
         synchronized (this) {
-            Optional<Migration> currentMigration = migrationLog.getCurrentMigration();
-            if (currentMigration.isPresent()) {
-                migrationService.executeMigration(currentMigration.get());
-            } else {
-                throw new NoPendingMigrationException("There are no available migrations! ");
-            }
+            migrationService.executeNextMigration();
         }
     }
     public void rollback(String id){

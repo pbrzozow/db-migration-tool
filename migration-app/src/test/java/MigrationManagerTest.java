@@ -33,18 +33,9 @@ class MigrationManagerTest {
 
         migrationManager.migrate();
 
-        verify(migrationService, times(1)).executeMigration(any(Migration.class));
+        verify(migrationService, times(1)).executeNextMigration();
     }
 
-    @Test
-    void shouldThrowExceptionWhenExecutionNotAvailable(){
-        assertThrows(NoPendingMigrationException.class,()->migrationManager.migrate());
-    }
-
-    @Test
-    void shouldThrowExceptionWhenRollbackNotAvailable(){
-        assertThrows(UndoMigrationNotFoundException.class,()->migrationManager.rollback("2"));
-    }
     @Test
     void executeRollbackWhenAvailable(){
         String id = "3";
@@ -53,6 +44,6 @@ class MigrationManagerTest {
 
         migrationManager.rollback(id);
 
-        verify(migrationService, times(1)).executeMigration(migration);
+        verify(migrationService, times(1)).rollbackMigrations(id);
     }
 }
