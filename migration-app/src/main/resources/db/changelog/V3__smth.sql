@@ -1,1 +1,2 @@
-INSERT INTO EMP(name) values ('kamil');
+INSERT INTO address (city, person_id)
+SELECT 'City ' || id, id FROM person;

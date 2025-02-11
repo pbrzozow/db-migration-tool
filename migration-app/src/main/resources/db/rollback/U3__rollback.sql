@@ -1,1 +1,1 @@
-DELETE FROM EMP WHERE name = 'kamil';
+DELETE FROM address;

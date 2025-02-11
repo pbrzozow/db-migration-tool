@@ -1,1 +1,2 @@
-INSERT INTO EMP(name) values ('wojtek');
+INSERT INTO person (name)
+SELECT 'Person ' || generate_series(1, 50);
