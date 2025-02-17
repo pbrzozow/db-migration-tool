@@ -35,13 +35,18 @@ public class MigrationService {
     public void executeMigration(Migration migration) {
         try (Connection connection = DataSourceProvider.getDataSource().getConnection()) {
             connection.setAutoCommit(false);
-            migrationValidator.validate(migration);
-            executeMigration(migration, connection);
-            migrationLog.saveMigration(migration, connection);
-            connection.commit();
-            migrationLog.deleteCurrentMigration();
+            try {
+                migrationValidator.validate(migration);
+                executeMigration(migration, connection);
+                migrationLog.saveMigration(migration, connection);
+                connection.commit();
+                migrationLog.deleteCurrentMigration();
+            } catch (SQLException e) {
+                connection.rollback();
+                logger.error("Error occurred during migration execution, rolled back transaction",e);
+            }
         } catch (SQLException e) {
-            logger.error("Error occurred during migration execution", e);
+            logger.error("Database connection error during migration execution", e);
         }
     }
 
@@ -49,6 +54,7 @@ public class MigrationService {
         long target = Long.parseLong(rollbackId);
         try (Connection connection = DataSourceProvider.getDataSource().getConnection()) {
             connection.setAutoCommit(false);
+            try {
             long lastMigrationIndex = migrationLog.fetchLastMigrationIndex();
             while (lastMigrationIndex != target-1) {
                 rollback(String.valueOf(lastMigrationIndex), connection);
@@ -57,8 +63,12 @@ public class MigrationService {
             }
             migrationLog.updatePendingMigrations();
             connection.commit();
+            }catch (Exception e){
+                connection.rollback();
+                logger.error("Error occurred during rollback execution, transaction rolled back",e);
+            }
     } catch (SQLException e) {
-            logger.error("Error occurred during rollbacks execution", e);
+            logger.error("Database connection error during rollback execution", e);
         }
     }
 
