@@ -60,7 +60,7 @@ Where <id> corresponds to the migration number you want to undo.
 
 To execute a rollback within a Java application:
 ```
-manager.rollback();
+manager.rollback(id);
 ```
 ### 3. History
 The tool keeps a record of all database migrations applied. You can retrieve the history of changes to monitor database modifications over time.
