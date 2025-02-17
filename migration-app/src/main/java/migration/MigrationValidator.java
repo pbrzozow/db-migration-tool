@@ -16,6 +16,7 @@ public class MigrationValidator {
     private DataSource dataSource;
     private static final Logger logger
             = LoggerFactory.getLogger(MigrationValidator.class);
+    
         public void validate(Migration migration) throws SQLException {
         logger.debug("Validating migration...");
         try (Connection connection = dataSource.getConnection();
